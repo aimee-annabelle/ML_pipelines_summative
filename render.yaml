@@ -3,7 +3,10 @@ services:
     name: chest-xray-api
     runtime: python
     plan: free
-    buildCommand: pip install -r requirements.txt
+    buildCommand: |
+      pip install -r requirements.txt
+      # Create upload directories in case they don't exist
+      mkdir -p uploads/training/normal uploads/training/pneumonia uploads/temp
     startCommand: cd backend && uvicorn main:app --host 0.0.0.0 --port $PORT
     envVars:
       - key: PYTHON_VERSION
