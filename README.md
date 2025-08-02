@@ -5,31 +5,19 @@
 This project implements a complete machine learning pipeline for **Chest X-ray Pneumonia Detection**, distinguishing between normal and pneumonia cases in chest radiographs. The system features:
 
 - **Medical Image Classification**: Deep learning model trained to identify pneumonia in chest X-ray images
-- **End-to-End ML Pipeline**: From medical image preprocessing to model deployment in healthcare settings
-- **FastAPI Backend**: RESTful API for secure medical image upload and real-time pneumonia prediction
-- **React Frontend**: User-friendly medical interface for healthcare professionals to upload X-rays and view diagnostic results
-- **Clinical-Grade Architecture**: Production-ready deployment with proper validation and medical data handling
-- **Comprehensive Testing**: Including flood testing for performance validation in high-throughput clinical environments
+- **End-to-End ML Pipeline**: From medical image preprocessing to model deployment
+- **FastAPI Backend**: RESTful API for medical image upload and real-time pneumonia prediction
+- **Production-Ready Architecture**: Clean, maintainable code with proper validation and data handling
 
-**Medical Use Case**: This system assists healthcare professionals in rapid pneumonia screening, providing AI-powered diagnostic support for chest X-ray interpretation with high accuracy and reliability.
+**Medical Use Case**: This system assists healthcare professionals in rapid pneumonia screening, providing AI-powered diagnostic support for chest X-ray interpretation.
 
-The project showcases modern MLOps practices applied to medical imaging with a focus on scalability, maintainability, and clinical user experience.
-
-## 🎥 Demo
-
-**YouTube Demo**: [Coming Soon - Demo will be uploaded here]
-
-## 🚀 Live Applications
-
-- **FastAPI Backend**: [Will be deployed and linked here]
-- **React Frontend**: [Will be deployed and linked here]
+The project showcases modern MLOps practices applied to medical imaging with a focus on scalability and maintainability.
 
 ## 🛠️ Setup Instructions
 
 ### Prerequisites
 
 - Python 3.8+
-- Node.js 16+
 - Git
 
 ### Python + FastAPI Backend Setup
@@ -59,262 +47,133 @@ The project showcases modern MLOps practices applied to medical imaging with a f
    pip install -r requirements.txt
    ```
 
-4. **Set up environment variables**
-
-   ```bash
-   # Create .env file
-   echo "DATABASE_URL=sqlite:///./ml_app.db" > .env
-   echo "SECRET_KEY=your-secret-key-here" >> .env
-   ```
-
-5. **Run the FastAPI server**
+4. **Run the FastAPI server**
 
    ```bash
    cd backend
    uvicorn main:app --reload --host 0.0.0.0 --port 8000
    ```
 
-6. **API Documentation**
+5. **API Documentation**
    - Swagger UI: http://localhost:8000/docs
    - ReDoc: http://localhost:8000/redoc
 
-### Node + React Frontend Setup
+## 📊 Dataset Information - Chest X-ray Pneumonia Classification
 
-1. **Navigate to frontend directory**
+### Dataset Overview
 
-   ```bash
-   cd frontend
-   ```
+The project uses a comprehensive chest X-ray dataset for pneumonia classification:
 
-2. **Install Node dependencies**
+- **Total Images**: 5,856 chest X-ray images
+- **Image Format**: JPEG
+- **Classes**: 2 (Normal, Pneumonia)
+- **Dataset Size**: ~1.3GB (managed with Git LFS)
 
-   ```bash
-   npm install
-   ```
+### Dataset Distribution
 
-3. **Set up environment variables**
+| Split     | Normal | Pneumonia | Total |
+| --------- | ------ | --------- | ----- |
+| **Train** | 1,349  | 3,883     | 5,232 |
+| **Test**  | 234    | 390       | 624   |
+| **Total** | 1,583  | 4,273     | 5,856 |
 
-   ```bash
-   # Create .env file in frontend directory
-   echo "REACT_APP_API_URL=http://localhost:8000" > .env
-   echo "REACT_APP_VERSION=1.0.0" >> .env
-   ```
+### Class Distribution Analysis
 
-4. **Start the development server**
+- **Training Set**: 74.2% Pneumonia, 25.8% Normal
+- **Test Set**: 62.5% Pneumonia, 37.5% Normal
+- **Overall**: 72.9% Pneumonia, 27.1% Normal
 
-   ```bash
-   npm start
-   ```
+### Technical Specifications
 
-5. **Build for production**
-   ```bash
-   npm run build
-   ```
-
-### Docker Setup (Alternative)
-
-1. **Build and run with Docker Compose**
-
-   ```bash
-   docker-compose up --build
-   ```
-
-2. **Access the applications**
-   - Backend: http://localhost:8000
-   - Frontend: http://localhost:3000
-
-## 🔥 Flood Test Results
-
-_Performance testing will be conducted and results will be documented here once the application is fully deployed._
-
-### Performance Metrics
-
-| Metric                    | Result | Threshold   | Status  |
-| ------------------------- | ------ | ----------- | ------- |
-| **Requests per Second**   | TBD    | > 500 req/s | Pending |
-| **Average Response Time** | TBD    | < 200ms     | Pending |
-| **95th Percentile**       | TBD    | < 500ms     | Pending |
-| **Error Rate**            | TBD    | < 1%        | Pending |
-| **Concurrent Users**      | TBD    | > 500       | Pending |
-
-### Load Testing Details
-
-```bash
-# Load testing will be performed using Artillery
-# Results will be updated once testing is complete
-```
-
-### Resource Utilization
-
-- **CPU Usage**: TBD
-- **Memory Usage**: TBD
-- **Database Connections**: TBD
-
-## 📱 Screenshots
-
-_Screenshots will be added here once the frontend and backend are fully implemented._
-
-### Frontend Interface
-
-#### Medical Dashboard
-
-_Screenshot coming soon_
-_Healthcare professional dashboard showing diagnostic statistics and patient queue_
-
-#### X-ray Upload Interface
-
-_Screenshot coming soon_
-_Secure medical image upload interface with drag-and-drop functionality_
-
-#### Pneumonia Detection Results
-
-_Screenshot coming soon_
-_Real-time pneumonia classification results with confidence scores and visual indicators_
-
-#### Diagnostic History
-
-_Screenshot coming soon_
-_Patient diagnostic history and batch processing results for clinical workflow_
-
-### Backend API Documentation
-
-#### Medical API Documentation
-
-_Screenshot coming soon_
-_FastAPI documentation for medical image processing endpoints_
-
-#### Prediction API Response
-
-_Screenshot coming soon_
-_Example JSON response from pneumonia detection endpoint with confidence metrics_
-
-## 📊 Model Metrics - Chest X-ray Pneumonia Classification
-
-_Model training will be performed and metrics will be documented here once the model is developed._
-
-### Training Performance
-
-| Metric                    | Training Set | Validation Set | Test Set |
-| ------------------------- | ------------ | -------------- | -------- |
-| **Accuracy**              | TBD          | TBD            | TBD      |
-| **Precision (Pneumonia)** | TBD          | TBD            | TBD      |
-| **Recall (Pneumonia)**    | TBD          | TBD            | TBD      |
-| **F1-Score (Pneumonia)**  | TBD          | TBD            | TBD      |
-| **Specificity (Normal)**  | TBD          | TBD            | TBD      |
-| **AUC-ROC**               | TBD          | TBD            | TBD      |
-
-### Clinical Performance Metrics
-
-| Clinical Metric                     | Value | Clinical Significance                           |
-| ----------------------------------- | ----- | ----------------------------------------------- |
-| **Sensitivity**                     | TBD   | High detection rate for pneumonia cases         |
-| **Specificity**                     | TBD   | Low false positive rate for normal cases        |
-| **PPV (Positive Predictive Value)** | TBD   | Probability that positive prediction is correct |
-| **NPV (Negative Predictive Value)** | TBD   | Probability that negative prediction is correct |
-
-### Model Details
-
-- **Architecture**: Convolutional Neural Network (CNN) with Transfer Learning
-- **Base Model**: TBD (will be selected during development)
-- **Input Image Size**: TBD
-- **Training Samples**: TBD chest X-ray images
-- **Test Samples**: TBD chest X-ray images
-- **Data Augmentation**: TBD
-- **Training Time**: TBD
-- **Inference Time**: TBD per X-ray image
-
-### Class Distribution
-
-| Class         | Training Samples | Test Samples | Description              |
-| ------------- | ---------------- | ------------ | ------------------------ |
-| **Normal**    | TBD              | TBD          | Healthy chest X-rays     |
-| **Pneumonia** | TBD              | TBD          | X-rays showing pneumonia |
-
-### Confusion Matrix
-
-```
-Will be updated once model training is complete
-```
+- **Architecture**: Convolutional Neural Network (CNN)
+- **Framework**: TensorFlow 2.19.0
+- **Image Processing**: OpenCV 4.12.0
+- **Input Format**: RGB chest X-ray images
+- **Training Environment**: Python 3.12.8
 
 ## 🗂️ Project Structure
 
 ```
 ML_pipelines_summative/
 │
-├── README.md
-├── requirements.txt
+├── README.md               # Project documentation
+├── requirements.txt        # Python dependencies
+├── train_model.py         # Model training script
 │
-├── backend/
-│   ├── main.py
-│   ├── models/
-│   ├── routers/
-│   └── utils/
+├── backend/               # FastAPI application
+│   ├── main.py           # API entry point
+│   └── app/
+│       ├── api.py        # API routes
+│       ├── models.py     # Data models and ML integration
+│       └── utils.py      # Utility functions
 │
-├── frontend/
-│   ├── public/
-│   ├── src/
-│   ├── package.json
-│   └── build/
+├── src/                   # Core ML modules
+│   ├── preprocessing.py   # Image preprocessing
+│   ├── model.py          # CNN model definition
+│   └── prediction.py     # Prediction pipeline
 │
-├── notebook/
-│   └── chest_xray_classification.ipynb
+├── data/                  # Dataset (Git LFS)
+│   ├── train/            # Training images (5,232)
+│   │   ├── NORMAL/       # Normal X-rays (1,349)
+│   │   └── PNEUMONIA/    # Pneumonia X-rays (3,883)
+│   └── test/             # Test images (624)
+│       ├── NORMAL/       # Normal X-rays (234)
+│       └── PNEUMONIA/    # Pneumonia X-rays (390)
 │
-├── src/
-│   ├── preprocessing.py
-│   ├── model.py
-│   └── prediction.py
+├── models/               # Trained model storage
+├── notebook/             # Jupyter notebooks
+│   └── project_name.ipynb
 │
-├── data/
-│   ├── train/
-│   └── test/
-│
-├── models/
-│   └── trained_model.pkl
-│
-│
-└── screenshots/
-    ├── dashboard.png
-    ├── prediction-interface.png
-    └── api-response.png
+└── venv/                 # Virtual environment
 ```
 
-## 🧪 Testing
+## 🚀 API Endpoints
 
-### Run Backend Tests
+The FastAPI backend provides the following endpoints:
 
-```bash
-cd backend
-pytest tests/ -v --coverage
-```
+### Core Endpoints
 
-### Run Frontend Tests
+- `GET /` - API information and status
+- `GET /health` - Health check endpoint
+- `GET /docs` - Interactive Swagger UI documentation
+- `GET /redoc` - ReDoc API documentation
 
-```bash
-cd frontend
-npm test
-```
+### ML Endpoints
 
-### API Health Check
+- `POST /api/v1/predict` - Upload chest X-ray for pneumonia prediction
+- `POST /api/v1/upload` - Upload training images
+- `POST /api/v1/retrain` - Trigger model retraining
+- `GET /api/v1/status` - Get current model status
 
-```bash
-curl http://localhost:8000/health
-```
+### API Features
 
-## 🚀 Deployment
+- **Async Operations**: Non-blocking image processing
+- **File Validation**: JPEG/PNG format validation
+- **Error Handling**: Comprehensive error responses
+- **CORS Support**: Cross-origin requests enabled
+- **Interactive Docs**: Built-in Swagger UI at `/docs`
 
-### Heroku (Backend)
+## 🔧 Technology Stack
 
-```bash
-heroku create your-app-name
-git push heroku main
-```
+### Backend
 
-### Netlify (Frontend)
+- **FastAPI**: Modern async web framework
+- **TensorFlow 2.19.0**: Deep learning framework
+- **OpenCV 4.12.0**: Computer vision library
+- **Pydantic**: Data validation and serialization
+- **Uvicorn**: ASGI server
 
-```bash
-npm run build
-# Upload build folder to Netlify
-```
+### Data Management
+
+- **Git LFS**: Large file storage for dataset
+- **NumPy**: Numerical computing
+- **Pandas**: Data manipulation
+- **Pillow**: Image processing
+
+### Development
+
+- **Python 3.12.8**: Programming language
+- **Virtual Environment**: Isolated dependencies
 
 ## 🤝 Contributing
 
