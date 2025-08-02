@@ -1,5 +1,5 @@
 # Core ML and Data Science packages
-tensorflow==2.15.0
+tensorflow
 keras
 h5py
 numpy
