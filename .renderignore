@@ -1,0 +1,25 @@
+# Render ignore file - excludes files/folders from triggering rebuilds
+
+# Frontend folder (deployed separately)
+frontend/
+frontend/**
+
+# Development files
+*.md
+.vscode/
+.idea/
+
+# Documentation
+docs/
+*.txt
+!requirements.txt
+
+# Git files
+.git/
+.gitignore
+.gitattributes
+
+# Local environment
+.env
+venv/
+__pycache__/
