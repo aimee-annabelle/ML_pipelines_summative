@@ -1,25 +1,25 @@
 # Core ML and Data Science packages
-tensorflow
+tensorflow==2.15.0
 keras
 h5py
 numpy
 pandas
 matplotlib
 seaborn
-opencv-python
+opencv-python-headless
 pillow
 scikit-learn
 
 # FastAPI and Web API packages
-fastapi
-uvicorn
-pydantic
-aiofiles
-python-magic-bin
-python-multipart
+fastapi==0.104.1
+uvicorn[standard]==0.24.0
+pydantic==2.5.0
+aiofiles==23.2.1
+python-magic
+python-multipart==0.0.6
 
 # System monitoring
-psutil
+psutil==5.9.6
 
 # Date/time utilities  
-python-dateutil
+python-dateutil==2.8.2

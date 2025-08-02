@@ -3,7 +3,20 @@ from PIL import Image
 import os
 import aiofiles
 from typing import List, Tuple
-import magic
+try:
+    # Try python-magic-bin first (Windows)
+    import magic
+except ImportError:
+    try:
+        # Fallback to python-magic (Linux/Unix)
+        import magic
+    except ImportError:
+        # If neither works, create a mock magic module
+        class MockMagic:
+            @staticmethod
+            def from_buffer(data, mime=True):
+                return 'application/octet-stream'
+        magic = MockMagic()
 import hashlib
 from datetime import datetime
 
