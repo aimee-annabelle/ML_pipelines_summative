@@ -1,5 +1,5 @@
 # Core ML and Data Science packages
-tensorflow==2.19.0
+tensorflow
 keras
 h5py
 numpy
@@ -11,12 +11,12 @@ pillow
 scikit-learn
 
 # FastAPI and Web API packages
-fastapi==0.116.1
-uvicorn==0.35.0
-pydantic==2.11.7
-aiofiles==24.1.0
-python-magic-bin==0.4.14
-python-multipart==0.0.20
+fastapi
+uvicorn
+pydantic
+aiofiles
+python-magic-bin>=0.4.14
+python-multipart>=0.0.20
 
 # System monitoring
 psutil==7.0.0

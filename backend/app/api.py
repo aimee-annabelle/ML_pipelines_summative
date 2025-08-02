@@ -159,11 +159,37 @@ async def retrain_model(
         )
         
         try:
+            # Determine training data path
+            training_data_path = "uploads/training"  # Default to uploaded data
+            
+            if not use_uploaded_data:
+                # Check if original data folder exists (Git LFS or local)
+                if os.path.exists("data/train") and os.path.exists("data/train/NORMAL") and os.path.exists("data/train/PNEUMONIA"):
+                    # Verify the data folders have content
+                    normal_count = len(os.listdir("data/train/NORMAL")) if os.path.exists("data/train/NORMAL") else 0
+                    pneumonia_count = len(os.listdir("data/train/PNEUMONIA")) if os.path.exists("data/train/PNEUMONIA") else 0
+                    
+                    if normal_count > 0 and pneumonia_count > 0:
+                        training_data_path = "data/train"
+                        logger.info(f"Using original dataset: {normal_count} normal, {pneumonia_count} pneumonia images")
+                    else:
+                        logger.warning("Original dataset folders exist but appear empty")
+                        raise HTTPException(
+                            status_code=400, 
+                            detail="Original training data is empty. Please upload training images first."
+                        )
+                else:
+                    logger.warning("Original dataset not found")
+                    raise HTTPException(
+                        status_code=400, 
+                        detail="Original training data not available. Please upload training images first."
+                    )
+            
             await model_manager.retrain_model(
                 training_id=training_id,
                 epochs=epochs,
                 learning_rate=learning_rate,
-                training_data_path="uploads/training" if use_uploaded_data else "data/train"
+                training_data_path=training_data_path
             )
         except Exception as e:
             logger.error(f"Failed to start retraining: {str(e)}")
