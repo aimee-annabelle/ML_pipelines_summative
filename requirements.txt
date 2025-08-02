@@ -15,11 +15,11 @@ fastapi
 uvicorn
 pydantic
 aiofiles
-python-magic-bin>=0.4.14
-python-multipart>=0.0.20
+python-magic-bin
+python-multipart
 
 # System monitoring
-psutil==7.0.0
+psutil
 
 # Date/time utilities  
-python-dateutil==2.9.0.post0
+python-dateutil
