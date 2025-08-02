@@ -70,6 +70,14 @@ tensorboard_logs/
 checkpoints/
 saved_models/
 
-# Archive files (but not the data we want to keep)
+# Archive files
 *.rar
 *.7z
+
+# Deployment specific
+.render/
+.env.local
+.env.production
+
+# Render build cache
+.render-buildpacks-cache/
