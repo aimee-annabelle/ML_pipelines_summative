@@ -1,28 +1,44 @@
 from fastapi import APIRouter, File, UploadFile, HTTPException, Form, BackgroundTasks
-from fastapi.responses import JSONResponse
-from pydantic import BaseModel
-from typing import List, Optional
+from typing import List
 import tempfile
 import os
-import shutil
 from datetime import datetime
 import logging
-import uuid
 
 from .models import (
     ModelManager, PredictionResponse, UploadResponse, RetrainResponse, 
     StatusResponse, PredictionClass, TrainingStatus, TrainingParameters,
-    TrainingStatusResponse, UploadedFile
+    UploadedFile
 )
 from .utils import (
     validate_image, save_uploaded_file, get_training_data_stats,
-    sanitize_filename, format_file_size, cleanup_temp_files
+    sanitize_filename
 )
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 router = APIRouter()
+
+
+def get_model_manager():
+    """Get the global model manager instance"""
+    import sys
+    try:
+        return getattr(sys.modules.get('main'), 'model_manager', None)
+    except Exception as e:
+        logger.error(f"Failed to get model manager: {e}")
+        return None
+
+
+def get_app_start_time():
+    """Get the app start time"""
+    import sys
+    try:
+        return getattr(sys.modules.get('main'), 'app_start_time', None)
+    except Exception as e:
+        logger.error(f"Failed to get app start time: {e}")
+        return None
 
 
 @router.post("/predict", response_model=PredictionResponse)
@@ -32,7 +48,7 @@ async def predict_pneumonia(
     try:
         await validate_image(file)
         
-        from ..main import model_manager
+        model_manager = get_model_manager()
         
         if not model_manager or not model_manager.model:
             raise HTTPException(
@@ -93,13 +109,9 @@ async def upload_training_images(
                     detail=f"Invalid label '{label}'. Must be one of: {valid_labels}"
                 )
         
-        from ..main import model_manager
-        
         uploaded_files = []
-        
         for file, label in zip(files, label_list):
             await validate_image(file)
-            
             saved_path = await save_uploaded_file(file, label)
             uploaded_files.append(UploadedFile(
                 filename=sanitize_filename(file.filename),
@@ -111,14 +123,13 @@ async def upload_training_images(
         logger.info(f"Uploaded {len(uploaded_files)} training images")
         
         stats = get_training_data_stats()
-        ready_for_training = stats["total_files"] >= 10
         
         return UploadResponse(
             message=f"Successfully uploaded {len(uploaded_files)} training images",
             uploaded_files=uploaded_files,
             total_files=len(uploaded_files),
             timestamp=datetime.now(),
-            ready_for_training=ready_for_training
+            ready_for_training=stats["total_files"] >= 10
         )
         
     except Exception as e:
@@ -134,7 +145,7 @@ async def retrain_model(
     learning_rate: float = Form(0.001, description="Learning rate for training")
 ):
     try:
-        from ..main import model_manager
+        model_manager = get_model_manager()
         
         if not model_manager:
             raise HTTPException(status_code=503, detail="Model manager not initialized")
@@ -176,13 +187,13 @@ async def retrain_model(
 
 @router.get("/status", response_model=StatusResponse)
 async def get_model_status():
+    """Get API and model status"""
     try:
-        from ..main import model_manager, app_start_time
+        model_manager = get_model_manager()
+        app_start_time = get_app_start_time()
         
         if not model_manager:
             raise HTTPException(status_code=503, detail="Model manager not initialized")
-        
-        uptime_seconds = (datetime.now() - app_start_time).total_seconds() if app_start_time else 0
         
         status_data = await model_manager.get_status()
         
@@ -204,42 +215,3 @@ async def get_model_status():
     except Exception as e:
         logger.error(f"Status error: {str(e)}")
         raise HTTPException(status_code=500, detail=f"Status check failed: {str(e)}")
-
-
-@router.get("/training/{training_id}", response_model=TrainingStatusResponse)
-async def get_training_status(training_id: str):
-    try:
-        from ..main import model_manager
-        
-        if not model_manager:
-            raise HTTPException(status_code=503, detail="Model manager not initialized")
-        
-        status = await model_manager.get_training_status(training_id)
-        
-        if status is None:
-            raise HTTPException(status_code=404, detail=f"Training job {training_id} not found")
-        
-        return status
-        
-    except Exception as e:
-        logger.error(f"Training status error: {str(e)}")
-        raise HTTPException(status_code=500, detail=f"Training status check failed: {str(e)}")
-
-
-@router.delete("/model")
-async def reset_model():
-    try:
-        from ..main import model_manager
-        
-        if not model_manager:
-            raise HTTPException(status_code=503, detail="Model manager not initialized")
-        
-        await model_manager.reset_model()
-        
-        cleanup_temp_files()
-        
-        return {"message": "Model reset successfully", "timestamp": datetime.now()}
-        
-    except Exception as e:
-        logger.error(f"Model reset error: {str(e)}")
-        raise HTTPException(status_code=500, detail=f"Model reset failed: {str(e)}")

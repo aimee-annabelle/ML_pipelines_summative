@@ -10,7 +10,12 @@ import numpy as np
 import cv2
 from tensorflow.keras.preprocessing.image import ImageDataGenerator
 from tensorflow.keras.utils import to_categorical
-from sklearn.model_selection import train_test_split
+try:
+    from sklearn.model_selection import train_test_split
+    SKLEARN_AVAILABLE = True
+except ImportError:
+    SKLEARN_AVAILABLE = False
+    print("Warning: sklearn not available. Some functions may be limited.")
 import matplotlib.pyplot as plt
 
 

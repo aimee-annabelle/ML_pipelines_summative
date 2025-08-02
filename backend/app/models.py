@@ -12,13 +12,31 @@ import psutil
 sys.path.append(os.path.join(os.path.dirname(__file__), '..', '..', 'src'))
 
 try:
-    from model import ChestXRayClassifier
-    from preprocessing import preprocess_image
-    from prediction import load_model, predict_image
+    import importlib.util
+    
+    src_path = os.path.join(os.path.dirname(__file__), '..', '..', 'src')
+    
+    # Import ML modules
+    model_spec = importlib.util.spec_from_file_location("model", os.path.join(src_path, "model.py"))
+    model_module = importlib.util.module_from_spec(model_spec)
+    model_spec.loader.exec_module(model_module)
+    ChestXrayClassifier = getattr(model_module, 'ChestXrayClassifier', None)
+    
+    preprocessing_spec = importlib.util.spec_from_file_location("preprocessing", os.path.join(src_path, "preprocessing.py"))
+    preprocessing_module = importlib.util.module_from_spec(preprocessing_spec)
+    preprocessing_spec.loader.exec_module(preprocessing_module)
+    preprocess_for_prediction = getattr(preprocessing_module, 'preprocess_for_prediction', None)
+    
+    prediction_spec = importlib.util.spec_from_file_location("prediction", os.path.join(src_path, "prediction.py"))
+    prediction_module = importlib.util.module_from_spec(prediction_spec)
+    prediction_spec.loader.exec_module(prediction_module)
+    load_model = getattr(prediction_module, 'load_model', None)
+    predict_image = getattr(prediction_module, 'predict_image', None)
+    
 except ImportError as e:
     print(f"Warning: Could not import ML modules: {e}")
-    ChestXRayClassifier = None
-    preprocess_image = None
+    ChestXrayClassifier = None
+    preprocess_for_prediction = None
     load_model = None
     predict_image = None
 
@@ -50,11 +68,11 @@ class PredictionResponse(BaseModel):
     medical_advice: str = Field(..., description="Medical advice and disclaimer")
     model_version: str = Field(..., description="Version of the model used")
     
-    class Config:
-        json_encoders = {
+    model_config = {
+        "json_encoders": {
             datetime: lambda v: v.isoformat()
-        }
-        schema_extra = {
+        },
+        "json_schema_extra": {
             "example": {
                 "filename": "chest_xray_001.jpg",
                 "prediction": "PNEUMONIA",
@@ -66,7 +84,9 @@ class PredictionResponse(BaseModel):
                 "medical_advice": "This AI prediction is for assistance only. Please consult with a qualified healthcare professional for proper diagnosis and treatment.",
                 "model_version": "1.0.0"
             }
-        }
+        },
+        "protected_namespaces": ()
+    }
 
 
 class UploadedFile(BaseModel):
@@ -85,11 +105,11 @@ class UploadResponse(BaseModel):
     timestamp: datetime = Field(..., description="Upload timestamp")
     ready_for_training: bool = Field(..., description="Whether data is ready for training")
     
-    class Config:
-        json_encoders = {
+    model_config = {
+        "json_encoders": {
             datetime: lambda v: v.isoformat()
-        }
-        schema_extra = {
+        },
+        "json_schema_extra": {
             "example": {
                 "message": "Successfully uploaded 5 training images",
                 "uploaded_files": [
@@ -105,6 +125,7 @@ class UploadResponse(BaseModel):
                 "ready_for_training": True
             }
         }
+    }
 
 
 class TrainingParameters(BaseModel):
@@ -123,11 +144,11 @@ class RetrainResponse(BaseModel):
     parameters: TrainingParameters = Field(..., description="Training parameters used")
     timestamp: datetime = Field(..., description="Training start timestamp")
     
-    class Config:
-        json_encoders = {
+    model_config = {
+        "json_encoders": {
             datetime: lambda v: v.isoformat()
-        }
-        schema_extra = {
+        },
+        "json_schema_extra": {
             "example": {
                 "message": "Model retraining started successfully",
                 "training_id": "training_20240120_103045",
@@ -141,6 +162,7 @@ class RetrainResponse(BaseModel):
                 "timestamp": "2024-01-20T10:30:45.123456"
             }
         }
+    }
 
 
 class StatusResponse(BaseModel):
@@ -158,11 +180,11 @@ class StatusResponse(BaseModel):
     model_path: Optional[str] = Field(None, description="Path to current model file")
     timestamp: datetime = Field(..., description="Status check timestamp")
     
-    class Config:
-        json_encoders = {
+    model_config = {
+        "json_encoders": {
             datetime: lambda v: v.isoformat()
-        }
-        schema_extra = {
+        },
+        "json_schema_extra": {
             "example": {
                 "api_status": "healthy",
                 "model_loaded": True,
@@ -177,28 +199,9 @@ class StatusResponse(BaseModel):
                 "model_path": "/models/chest_xray_model.h5",
                 "timestamp": "2024-01-20T10:30:45.123456"
             }
-        }
-
-
-class TrainingStatusResponse(BaseModel):
-    """Response model for training job status"""
-    training_id: str = Field(..., description="Training job ID")
-    status: TrainingStatus = Field(..., description="Current status")
-    progress_percentage: float = Field(..., ge=0, le=100, description="Training progress (0-100%)")
-    current_epoch: int = Field(..., description="Current training epoch")
-    total_epochs: int = Field(..., description="Total epochs to train")
-    current_loss: Optional[float] = Field(None, description="Current training loss")
-    current_accuracy: Optional[float] = Field(None, description="Current training accuracy")
-    validation_loss: Optional[float] = Field(None, description="Current validation loss")
-    validation_accuracy: Optional[float] = Field(None, description="Current validation accuracy")
-    started_at: datetime = Field(..., description="Training start time")
-    estimated_completion: Optional[datetime] = Field(None, description="Estimated completion time")
-    error_message: Optional[str] = Field(None, description="Error message if training failed")
-    
-    class Config:
-        json_encoders = {
-            datetime: lambda v: v.isoformat()
-        }
+        },
+        "protected_namespaces": ()
+    }
 
 
 class ModelManager:
@@ -207,10 +210,10 @@ class ModelManager:
     def __init__(self):
         self.model = None
         self.model_version = "1.0.0"
-        self.training_jobs = {}
         self.prediction_count = 0
         self.last_prediction_time = None
-        self.model_path = os.path.join("models", "chest_xray_model.h5")
+        # Use absolute path to the model file
+        self.model_path = os.path.join(os.path.dirname(__file__), '..', '..', 'models', 'best_xray_model.h5')
         self.start_time = time.time()
         self.is_training = False
         
@@ -228,8 +231,8 @@ class ModelManager:
             else:
                 print(f"Model file not found at {self.model_path} or load_model function unavailable")
                 # Try to create and train a new model
-                if ChestXRayClassifier:
-                    classifier = ChestXRayClassifier()
+                if ChestXrayClassifier:
+                    classifier = ChestXrayClassifier()
                     # Check if we have training data
                     train_data_path = "data/train"
                     if os.path.exists(train_data_path):
@@ -269,7 +272,7 @@ class ModelManager:
         if self.model is None:
             raise ValueError("Model not loaded")
         
-        if not (preprocess_image and predict_image):
+        if not (preprocess_for_prediction and predict_image):
             raise ValueError("Prediction functions not available")
             
         start_time = time.time()
@@ -280,7 +283,7 @@ class ModelManager:
             with ThreadPoolExecutor() as executor:
                 # Preprocess image
                 processed_image = await loop.run_in_executor(
-                    executor, preprocess_image, image_path
+                    executor, preprocess_for_prediction, image_path
                 )
                 
                 # Make prediction - expecting (prediction, confidence) tuple
@@ -331,18 +334,10 @@ class ModelManager:
         if self.is_training:
             raise ValueError("Model is already being trained")
             
-        if not ChestXRayClassifier:
+        if not ChestXrayClassifier:
             raise ValueError("Model training not available")
         
         self.is_training = True
-        self.training_jobs[training_id] = {
-            "status": TrainingStatus.STARTING,
-            "progress_percentage": 0.0,
-            "current_epoch": 0,
-            "total_epochs": kwargs.get("epochs", 10),
-            "started_at": datetime.now(),
-            "error_message": None
-        }
         
         try:
             # Start training in background
@@ -350,17 +345,12 @@ class ModelManager:
             
         except Exception as e:
             self.is_training = False
-            self.training_jobs[training_id]["status"] = TrainingStatus.FAILED
-            self.training_jobs[training_id]["error_message"] = str(e)
             raise
     
     async def _retrain_background(self, training_id: str, **kwargs):
         """Retrain model in background"""
         try:
-            # Update status
-            self.training_jobs[training_id]["status"] = TrainingStatus.TRAINING
-            
-            classifier = ChestXRayClassifier()
+            classifier = ChestXrayClassifier()
             training_data_path = kwargs.get("training_data_path", "uploads/training")
             epochs = kwargs.get("epochs", 10)
             
@@ -376,16 +366,11 @@ class ModelManager:
                     self._train_model_sync,
                     classifier,
                     training_data_path,
-                    epochs,
-                    training_id
+                    epochs
                 )
             
             # Reload the model
             await self.load_model()
-            
-            # Update status
-            self.training_jobs[training_id]["status"] = TrainingStatus.COMPLETED
-            self.training_jobs[training_id]["progress_percentage"] = 100.0
             
         except Exception as e:
             # Restore backup if training failed
@@ -393,22 +378,14 @@ class ModelManager:
             if os.path.exists(backup_path):
                 os.rename(backup_path, self.model_path)
             
-            self.training_jobs[training_id]["status"] = TrainingStatus.FAILED
-            self.training_jobs[training_id]["error_message"] = str(e)
+            raise
             
         finally:
             self.is_training = False
     
-    def _train_model_sync(self, classifier, training_data_path: str, epochs: int, training_id: str):
+    def _train_model_sync(self, classifier, training_data_path: str, epochs: int):
         """Synchronous training function"""
         try:
-            # Train new model with progress tracking
-            for epoch in range(epochs):
-                # Update progress
-                self.training_jobs[training_id]["current_epoch"] = epoch + 1
-                self.training_jobs[training_id]["progress_percentage"] = (epoch + 1) / epochs * 100
-                
-            # Actual training call
             classifier.train(
                 training_data_path,
                 "data/test",  # validation data
@@ -456,37 +433,5 @@ class ModelManager:
         }
     
     async def get_training_status(self, training_id: str):
-        """Get training job status"""
-        job = self.training_jobs.get(training_id)
-        if not job:
-            return None
-            
-        # Calculate estimated completion
-        estimated_completion = None
-        if job["status"] == TrainingStatus.TRAINING and job["current_epoch"] > 0:
-            elapsed = (datetime.now() - job["started_at"]).total_seconds()
-            time_per_epoch = elapsed / job["current_epoch"]
-            remaining_epochs = job["total_epochs"] - job["current_epoch"]
-            estimated_seconds = remaining_epochs * time_per_epoch
-            estimated_completion = datetime.now() + timedelta(seconds=estimated_seconds)
-        
-        return TrainingStatusResponse(
-            training_id=training_id,
-            status=job["status"],
-            progress_percentage=job["progress_percentage"],
-            current_epoch=job["current_epoch"],
-            total_epochs=job["total_epochs"],
-            current_loss=job.get("current_loss"),
-            current_accuracy=job.get("current_accuracy"),
-            validation_loss=job.get("validation_loss"),
-            validation_accuracy=job.get("validation_accuracy"),
-            started_at=job["started_at"],
-            estimated_completion=estimated_completion,
-            error_message=job.get("error_message")
-        )
-    
-    async def reset_model(self):
-        """Reset model to initial state"""
-        self.model = None
-        self.prediction_count = 0
-        self.last_prediction_time = None
+        """Training status tracking disabled - endpoint removed"""
+        return None

@@ -34,8 +34,14 @@ The project showcases modern MLOps practices applied to medical imaging with a f
    ```bash
    python -m venv venv
 
-   # Windows
+   # Windows (Command Prompt)
    venv\Scripts\activate
+
+   # Windows (PowerShell)
+   venv\Scripts\Activate.ps1
+
+   # Windows (Git Bash)
+   source venv/Scripts/activate
 
    # macOS/Linux
    source venv/bin/activate

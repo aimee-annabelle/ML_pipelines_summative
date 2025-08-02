@@ -157,32 +157,6 @@ def validate_image_dimensions(image_path: str, min_size: Tuple[int, int] = (224,
         return False
 
 
-def cleanup_temp_files(max_age_hours: int = 24):
-    """
-    Clean up temporary files older than specified age
-    
-    Args:
-        max_age_hours: Maximum age of files to keep (in hours)
-    """
-    import time
-    
-    if not os.path.exists(TEMP_DIR):
-        return
-    
-    current_time = time.time()
-    max_age_seconds = max_age_hours * 3600
-    
-    for filename in os.listdir(TEMP_DIR):
-        file_path = os.path.join(TEMP_DIR, filename)
-        if os.path.isfile(file_path):
-            file_age = current_time - os.path.getctime(file_path)
-            if file_age > max_age_seconds:
-                try:
-                    os.remove(file_path)
-                except Exception:
-                    pass  # Ignore errors
-
-
 def get_training_data_stats() -> dict:
     """
     Get statistics about training data
@@ -213,23 +187,6 @@ def get_training_data_stats() -> dict:
                 stats["pneumonia_count"] = file_count
     
     return stats
-
-
-def format_file_size(size_bytes: int) -> str:
-    """
-    Format file size in human readable format
-    
-    Args:
-        size_bytes: File size in bytes
-        
-    Returns:
-        str: Formatted file size
-    """
-    for unit in ['B', 'KB', 'MB', 'GB']:
-        if size_bytes < 1024.0:
-            return f"{size_bytes:.1f} {unit}"
-        size_bytes /= 1024.0
-    return f"{size_bytes:.1f} TB"
 
 
 def sanitize_filename(filename: str) -> str:

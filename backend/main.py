@@ -2,11 +2,10 @@
 FastAPI main application for Chest X-ray Pneumonia Classification
 """
 
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from contextlib import asynccontextmanager
 import uvicorn
-import os
 from datetime import datetime
 
 from app.api import router as api_router
@@ -84,16 +83,6 @@ async def health_check():
         "timestamp": datetime.now().isoformat(),
         "uptime_seconds": (datetime.now() - app_start_time).total_seconds() if app_start_time else 0
     }
-
-
-def get_model_manager():
-    global model_manager
-    if model_manager is None:
-        raise HTTPException(status_code=503, detail="Model manager not initialized")
-    return model_manager
-
-
-app.state.model_manager = get_model_manager
 
 
 if __name__ == "__main__":
