@@ -13,14 +13,18 @@ services:
         libxrender-dev \
         libgomp1 \
         libmagic1 \
-        libmagic-dev || true
-      pip install --upgrade pip
-      pip install -r requirements.txt
+        libmagic-dev \
+        build-essential || true
+      pip install --upgrade pip setuptools wheel
+      # Install packages with no-cache to avoid issues
+      pip install --no-cache-dir -r requirements.txt
       # Create upload directories in case they don't exist
       mkdir -p uploads/training/normal uploads/training/pneumonia uploads/temp
     startCommand: cd backend && uvicorn main:app --host 0.0.0.0 --port $PORT
     envVars:
       - key: PYTHON_VERSION
-        value: 3.11.0
+        value: 3.10.12
       - key: ENVIRONMENT
         value: production
+      - key: DISABLE_COLLECTSTATIC
+        value: 1
