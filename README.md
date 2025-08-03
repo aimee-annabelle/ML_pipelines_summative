@@ -13,6 +13,10 @@ This project implements a complete machine learning pipeline for **Chest X-ray P
 
 The project showcases modern MLOps practices applied to medical imaging with a focus on scalability and maintainability.
 
+## Video Demo
+
+[Link to Video](https://vimeo.com/1106846325/07c2d0b6bf?ts=0&share=copy)
+
 ## 🛠️ Setup Instructions
 
 ### Prerequisites

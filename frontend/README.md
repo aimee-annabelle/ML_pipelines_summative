@@ -10,8 +10,8 @@ This frontend is deployed separately from the backend API and should not trigger
 
 The frontend will connect to the deployed backend API at:
 
-- Production API: `https://your-service-name.onrender.com`
-- API Documentation: `https://your-service-name.onrender.com/docs`
+- Production API: `https://chest-xray-api-3u81.onrender.com`
+- API Documentation: `https://chest-xray-api-3u81.onrender.com/docs`
 
 ## Endpoints
 
