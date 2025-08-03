@@ -32,7 +32,7 @@ This system assists healthcare professionals in rapid pneumonia screening, provi
 
 ## Video Demo
 
-[Link to Video](https://vimeo.com/1106846325/07c2d0b6bf?ts=0&share=copy)
+[Link to Video](https://youtu.be/OIxV03kAyCE)
 
 ## Model Performance Metrics
 

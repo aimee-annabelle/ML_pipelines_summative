@@ -248,6 +248,12 @@ class ModelManager:
     async def _train_new_model(self, classifier, train_data_path: str):
         """Train a new model"""
         try:
+            # Check if validation data exists, use training data if not
+            validation_path = "data/test"
+            if not os.path.exists(validation_path):
+                print("Validation data not found, using training data for validation")
+                validation_path = train_data_path
+                
             loop = asyncio.get_event_loop()
             with ThreadPoolExecutor() as executor:
                 # Train in separate thread
@@ -255,7 +261,7 @@ class ModelManager:
                     executor, 
                     classifier.train, 
                     train_data_path, 
-                    "data/test",  # validation data
+                    validation_path,
                     self.model_path
                 )
             # Load the newly trained model
@@ -386,9 +392,15 @@ class ModelManager:
     def _train_model_sync(self, classifier, training_data_path: str, epochs: int):
         """Synchronous training function"""
         try:
+            # Check if validation data exists, use training data if not
+            validation_path = "data/test"
+            if not os.path.exists(validation_path):
+                print("Validation data not found, using training data for validation")
+                validation_path = training_data_path
+                
             classifier.train(
                 training_data_path,
-                "data/test",  # validation data
+                validation_path,
                 self.model_path,
                 epochs=epochs
             )

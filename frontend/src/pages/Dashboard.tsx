@@ -258,7 +258,7 @@ const Dashboard: React.FC = () => {
             className="flex items-center justify-center p-4 bg-primary-50 border border-primary-200 rounded-lg hover:bg-primary-100 transition-colors"
           >
             <div className="text-center">
-              <div className="bg-primary-500 rounded-full p-2 mx-auto mb-2">
+              <div className="bg-primary-500 flex items-center justify-center rounded-full p-2 mx-auto mb-2">
                 <Activity className="h-5 w-5 text-white" />
               </div>
               <h3 className="font-medium text-gray-900">Make Prediction</h3>
@@ -271,7 +271,7 @@ const Dashboard: React.FC = () => {
             className="flex items-center justify-center p-4 bg-green-50 border border-green-200 rounded-lg hover:bg-green-100 transition-colors"
           >
             <div className="text-center">
-              <div className="bg-green-500 rounded-full p-2 mx-auto mb-2">
+              <div className="bg-green-500 flex items-center justify-center rounded-full p-2 mx-auto mb-2">
                 <RefreshCw className="h-5 w-5 text-white" />
               </div>
               <h3 className="font-medium text-gray-900">Retrain Model</h3>
@@ -284,7 +284,7 @@ const Dashboard: React.FC = () => {
             className="flex items-center justify-center p-4 bg-purple-50 border border-purple-200 rounded-lg hover:bg-purple-100 transition-colors"
           >
             <div className="text-center">
-              <div className="bg-purple-500 rounded-full p-2 mx-auto mb-2">
+              <div className="bg-purple-500 flex items-center justify-center rounded-full p-2 mx-auto mb-2">
                 <TrendingUp className="h-5 w-5 text-white" />
               </div>
               <h3 className="font-medium text-gray-900">View Analytics</h3>

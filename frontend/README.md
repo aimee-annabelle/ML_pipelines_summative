@@ -2,9 +2,6 @@
 
 This folder contains the frontend application for the Chest X-ray Pneumonia Classification system.
 
-## Deployment
-
-This frontend is deployed separately from the backend API and should not trigger backend rebuilds.
 
 ## API Integration
 

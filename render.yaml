@@ -4,6 +4,8 @@ services:
     runtime: python
     plan: free
     buildCommand: |
+      # Skip Git LFS during clone to avoid LFS quota issues
+      export GIT_LFS_SKIP_SMUDGE=1
       # Install system dependencies for OpenCV and magic
       apt-get update && apt-get install -y \
         libgl1-mesa-glx \
@@ -26,5 +28,7 @@ services:
         value: 3.10.12
       - key: ENVIRONMENT
         value: production
+      - key: GIT_LFS_SKIP_SMUDGE
+        value: "1"
       - key: DISABLE_COLLECTSTATIC
         value: 1
