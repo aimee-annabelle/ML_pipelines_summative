@@ -7,7 +7,7 @@
 pip install locust requests
 
 # 2. Make sure API is running
-cd ../backend && python main.py
+curl -s http://localhost:8000/health
 ```
 
 ## Run Flood Tests
@@ -48,8 +48,8 @@ locust -f locustfile.py --host=http://localhost:8000
 
 ## Quick Results Summary:
 
-✅ **100% Success Rate** under flood testing  
-⏱️ **0.634s Average Response Time**  
-🎯 **Performance Rating: EXCELLENT**
+**100% Success Rate** under flood testing  
+**0.634s Average Response Time**  
+**Performance Rating: EXCELLENT**
 
 See README.md for complete analysis and results.

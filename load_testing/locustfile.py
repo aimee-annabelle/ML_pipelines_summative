@@ -173,7 +173,7 @@ def on_test_stop(environment, **kwargs):
         p99 = sorted_times[int(len(sorted_times) * 0.99)]
         
         # Print summary
-        logger.info(f"📊 FLOOD TEST RESULTS:")
+        logger.info(f"FLOOD TEST RESULTS:")
         logger.info(f"  Total Prediction Requests: {total_requests}")
         logger.info(f"  Successful Requests: {request_metrics['success_count']}")
         logger.info(f"  Failed Requests: {request_metrics['error_count']}")
@@ -208,7 +208,7 @@ def on_test_stop(environment, **kwargs):
         with open("flood_test_results.json", "w") as f:
             json.dump(results, f, indent=2)
         
-        logger.info("📋 Results saved to flood_test_results.json")
+        logger.info("Results saved to flood_test_results.json")
     else:
         logger.warning("No prediction requests were made during the test")
 

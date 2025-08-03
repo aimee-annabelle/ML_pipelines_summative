@@ -10,7 +10,7 @@ import sys
 def run_flood_test(users=10, duration=60, host="http://localhost:8000"):
     """Run a flood test with specified parameters"""
     
-    print(f"🚀 Starting flood test:")
+    print(f"Starting flood test:")
     print(f"   Users: {users}")
     print(f"   Duration: {duration} seconds")
     print(f"   Target: {host}")
@@ -31,17 +31,17 @@ def run_flood_test(users=10, duration=60, host="http://localhost:8000"):
         result = subprocess.run(cmd, capture_output=True, text=True, timeout=duration + 30)
         
         if result.returncode == 0:
-            print("✅ Flood test completed successfully!")
+            print("Flood test completed successfully!")
         else:
-            print("❌ Flood test failed!")
+            print("Flood test failed!")
             print(f"Error: {result.stderr}")
             return None
             
     except subprocess.TimeoutExpired:
-        print("⏰ Test timed out")
+        print("Test timed out")
         return None
     except Exception as e:
-        print(f"❌ Error running test: {e}")
+        print(f"Error running test: {e}")
         return None
     
     # Read results if available
@@ -55,12 +55,12 @@ def run_flood_test(users=10, duration=60, host="http://localhost:8000"):
 def display_results(results):
     """Display flood test results in a readable format"""
     if not results or "flood_test_summary" not in results:
-        print("❌ No results available")
+        print("No results available")
         return
     
     summary = results["flood_test_summary"]
     
-    print("\n📊 FLOOD TEST RESULTS")
+    print("\nFLOOD TEST RESULTS")
     print("=" * 50)
     print(f"Total Requests: {summary['total_prediction_requests']}")
     print(f"Successful: {summary['successful_requests']}")
@@ -68,7 +68,7 @@ def display_results(results):
     print(f"Success Rate: {summary['success_rate_percent']:.1f}%")
     print()
     
-    print("⏱️  RESPONSE TIME ANALYSIS")
+    print("RESPONSE TIME ANALYSIS")
     print("-" * 30)
     stats = summary["response_time_stats"]
     print(f"Average: {stats['average_seconds']:.3f}s")
@@ -80,13 +80,13 @@ def display_results(results):
     # Performance assessment
     avg_time = stats['average_seconds']
     if avg_time < 1.0:
-        performance = "🟢 EXCELLENT"
+        performance = "EXCELLENT"
     elif avg_time < 2.0:
-        performance = "🟡 GOOD"
+        performance = "GOOD"
     elif avg_time < 5.0:
-        performance = "🟠 FAIR"
+        performance = "FAIR"
     else:
-        performance = "🔴 POOR"
+        performance = "POOR"
     
     print(f"\nPerformance Rating: {performance}")
     print("=" * 50)
@@ -111,14 +111,14 @@ def main():
     all_results = []
     
     for test in tests:
-        print(f"\n🧪 Running {test['name']} Test...")
+        print(f"\nRunning {test['name']} Test...")
         results = run_flood_test(
             users=test["users"], 
             duration=test["duration"]
         )
         
         if results:
-            print(f"\n📋 {test['name']} Results:")
+            print(f"\n{test['name']} Results:")
             display_results(results)
             all_results.append({
                 "test_name": test["name"],
@@ -132,7 +132,7 @@ def main():
     if all_results:
         with open("all_flood_test_results.json", "w") as f:
             json.dump(all_results, f, indent=2)
-        print("💾 All results saved to all_flood_test_results.json")
+        print("All results saved to all_flood_test_results.json")
 
 if __name__ == "__main__":
     main()
