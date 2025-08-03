@@ -81,3 +81,6 @@ saved_models/
 
 # Render build cache
 .render-buildpacks-cache/
+
+# frontend 
+node_modules/
